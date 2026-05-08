@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { MapPin, Phone, Mail, ShoppingBag } from 'lucide-react'
+import Image from 'next/image'
+import { MapPin, Phone, Mail } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -9,9 +10,13 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link href="/" className="inline-flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-ember flex items-center justify-center">
-                <ShoppingBag className="w-4 h-4 text-white" />
-              </div>
+              <Image
+                src="/logo.png"
+                alt="2HBread Logo"
+                width={40}
+                height={40}
+                className="rounded-lg object-contain"
+              />
               <span className="font-display font-bold text-xl text-white">
                 2H<span className="text-spice">Bread</span>
               </span>

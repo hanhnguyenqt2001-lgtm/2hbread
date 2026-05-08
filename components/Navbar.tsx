@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Menu, X, ShoppingBag } from 'lucide-react'
+import Image from 'next/image'
+import { Menu, X } from 'lucide-react'
 
 const links = [
   { href: '/', label: 'Trang chủ' },
@@ -31,9 +32,14 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-9 h-9 rounded-xl bg-bread-500 flex items-center justify-center shadow-sm group-hover:bg-ember transition-colors duration-200">
-            <ShoppingBag className="w-5 h-5 text-cream-100" />
-          </div>
+          <Image
+            src="/logo.png"
+            alt="2HBread Logo"
+            width={44}
+            height={44}
+            className="rounded-xl object-contain group-hover:scale-105 transition-transform duration-200"
+            priority
+          />
           <span className="font-display font-bold text-xl text-bread-800 tracking-tight">
             2H<span className="text-ember">Bread</span>
           </span>
