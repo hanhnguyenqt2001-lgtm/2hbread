@@ -40,3 +40,4 @@ CLAUDE.md
 # source documents from the shop (menu.docx etc.) — content is copied into data/ and public/images/
 *.docx
 ~$*
+*.pdf
