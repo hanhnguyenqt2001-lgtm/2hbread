@@ -38,16 +38,21 @@ export function buildOrderMessage(customer: Customer, lines: CartLine[], total: 
 }
 
 // Zalo links can't prefill a message, so the order is copied for the customer to paste.
-// The synchronous copy runs first because it must happen before window.open steals focus.
-export function copyTextSync(text: string) {
+// Both copy paths start synchronously inside the tap, so they still count as a user
+// gesture even when the Zalo link navigates away right after.
+function copyWithTextarea(text: string) {
   try {
     const ta = document.createElement('textarea')
     ta.value = text
-    ta.setAttribute('readonly', '')
+    ta.contentEditable = 'true'
     ta.style.position = 'fixed'
+    ta.style.top = '0'
     ta.style.opacity = '0'
+    ta.style.fontSize = '16px' // stops iOS zooming in on focus
     document.body.appendChild(ta)
+    ta.focus()
     ta.select()
+    ta.setSelectionRange(0, text.length) // iOS ignores select()
     const ok = document.execCommand('copy')
     document.body.removeChild(ta)
     return ok
@@ -57,10 +62,10 @@ export function copyTextSync(text: string) {
 }
 
 export function copyText(text: string): Promise<boolean> {
-  if (copyTextSync(text)) return Promise.resolve(true)
-  if (!navigator.clipboard) return Promise.resolve(false)
+  const fallback = copyWithTextarea(text)
+  if (!navigator.clipboard?.writeText || !window.isSecureContext) return Promise.resolve(fallback)
   return navigator.clipboard.writeText(text).then(
     () => true,
-    () => false,
+    () => fallback,
   )
 }

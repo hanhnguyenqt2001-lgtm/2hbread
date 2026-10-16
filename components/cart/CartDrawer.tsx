@@ -40,16 +40,13 @@ export default function CartDrawer() {
     setErrors(next)
     if (Object.keys(next).length) return
 
-    const text = buildOrderMessage(customer, lines, total)
-    setMessage(text)
+    // Show the instructions first; on mobile, opening Zalo immediately hides them.
+    setMessage(buildOrderMessage(customer, lines, total))
     setCopied(null)
-    // Copy starts before opening Zalo so it still runs inside the tap gesture.
-    const copying = copyText(text)
-    window.open(site.zaloUrl, '_blank', 'noopener,noreferrer')
-    copying.then(setCopied)
   }
 
-  function recopy() {
+  // Runs in the Zalo link's onClick, so the copy happens in the same tap that opens Zalo.
+  function copyMessage() {
     if (message) copyText(message).then(setCopied)
   }
 
@@ -89,40 +86,63 @@ export default function CartDrawer() {
 
         {message ? (
           <div className="flex-1 overflow-y-auto px-5 py-6 space-y-5">
-            <div className="flex gap-3 rounded-2xl bg-leaf-50 border border-leaf-100 p-4">
-              <CheckCircle2 className="w-6 h-6 text-leaf-500 flex-shrink-0" />
-              <div className="text-sm text-ink/80 leading-relaxed">
-                {copied === false ? (
-                  <p>
-                    Trình duyệt không cho sao chép tự động. Hãy <b>chạm giữ đoạn đơn hàng bên dưới</b> để
-                    sao chép, rồi dán vào khung chat Zalo.
-                  </p>
-                ) : (
-                  <p>
-                    <b>Đơn hàng đã được sao chép.</b> Trong khung chat Zalo vừa mở, hãy{' '}
-                    <b>dán (paste)</b> và bấm <b>Gửi</b>. Quán sẽ gọi lại xác nhận trong ít phút.
-                  </p>
-                )}
+            <ol className="space-y-3 rounded-2xl bg-leaf-50 border border-leaf-100 p-4 text-sm text-ink/80 leading-relaxed">
+              {[
+                <>Bấm nút <b>“Sao chép đơn & mở Zalo”</b> bên dưới.</>,
+                <>Trong khung chat Zalo của quán, <b>nhấn giữ ô nhập tin nhắn → chọn Dán</b>.</>,
+                <>Bấm <b>Gửi</b>. Quán sẽ gọi lại xác nhận trong ít phút.</>,
+              ].map((step, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="w-6 h-6 rounded-full bg-leaf-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
+                    {i + 1}
+                  </span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ol>
+
+            <a
+              href={site.zaloUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={copyMessage}
+              className="btn-primary w-full !py-3.5 text-base"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Sao chép đơn & mở Zalo
+            </a>
+
+            {copied === true && (
+              <p className="flex items-center gap-1.5 text-sm text-leaf-600">
+                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                Đã sao chép đơn hàng – giờ chỉ cần dán vào Zalo và gửi.
+              </p>
+            )}
+            {copied === false && (
+              <p className="text-sm text-chili-500">
+                Máy không cho sao chép tự động. Hãy nhấn giữ vào nội dung đơn bên dưới → Chọn tất cả →
+                Sao chép, rồi dán vào Zalo.
+              </p>
+            )}
+
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs font-medium text-ink/70">Nội dung đơn hàng</span>
+                <button
+                  onClick={copyMessage}
+                  className="inline-flex items-center gap-1 text-xs font-medium text-leaf-600 hover:underline"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  {copied ? 'Đã chép' : 'Chỉ sao chép'}
+                </button>
               </div>
-            </div>
-
-            <textarea
-              readOnly
-              value={message}
-              rows={Math.min(14, message.split('\n').length + 1)}
-              onFocus={(e) => e.currentTarget.select()}
-              className="input font-mono text-xs leading-relaxed resize-none"
-            />
-
-            <div className="grid grid-cols-2 gap-3">
-              <button onClick={recopy} className="btn-outline !px-4">
-                <Copy className="w-4 h-4" />
-                {copied ? 'Đã chép' : 'Sao chép lại'}
-              </button>
-              <a href={site.zaloUrl} target="_blank" rel="noopener noreferrer" className="btn-primary !px-4">
-                <MessageCircle className="w-4 h-4" />
-                Mở Zalo
-              </a>
+              <textarea
+                readOnly
+                value={message}
+                rows={Math.min(14, message.split('\n').length + 1)}
+                onFocus={(e) => e.currentTarget.select()}
+                className="input font-mono text-xs leading-relaxed resize-none"
+              />
             </div>
 
             <div className="pt-2 flex flex-col items-center gap-2 text-sm">
@@ -222,7 +242,7 @@ export default function CartDrawer() {
               </div>
               <button type="submit" className="btn-primary w-full !py-3.5 text-base">
                 <MessageCircle className="w-5 h-5" />
-                Đặt món qua Zalo
+                Tiếp tục đặt món qua Zalo
               </button>
             </footer>
           </form>
