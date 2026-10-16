@@ -6,17 +6,37 @@
 # build
 /.next/
 /out/
+/build
 
-# env
-.env*.local
+# env (keep an example file if one is added)
+.env*
+!.env.example
 
-# debug
+# debug / logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# misc
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# editor / OS
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# misc
 *.pem
 /coverage
 /.vercel
+
+# claude
+CLAUDE.md
+.claude/
+
+# source documents from the shop (menu.docx etc.) — content is copied into data/ and public/images/
+*.docx
+~$*

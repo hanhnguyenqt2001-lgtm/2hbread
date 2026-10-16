@@ -1,19 +1,15 @@
-import Hero from '@/components/Hero'
-import About from '@/components/About'
-import FeaturedProducts from '@/components/FeaturedProducts'
-import Testimonials from '@/components/Testimonials'
-import SocialSection from '@/components/SocialSection'
-import Footer from '@/components/Footer'
+import Hero from '@/components/home/Hero'
+import MenuSection from '@/components/home/MenuSection'
+import HowToOrder from '@/components/home/HowToOrder'
+import StoryTeaser from '@/components/home/StoryTeaser'
 
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <About />
-      <FeaturedProducts />
-      <Testimonials />
-      <SocialSection />
-      <Footer />
+      <MenuSection />
+      <HowToOrder />
+      <StoryTeaser />
     </>
   )
 }

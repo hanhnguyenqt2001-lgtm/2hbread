@@ -1,62 +1,64 @@
 import type { Metadata } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
+import { Be_Vietnam_Pro, Playfair_Display } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
-import FloatingChat from '@/components/FloatingChat'
+import Footer from '@/components/Footer'
+import { CartProvider } from '@/components/cart/CartProvider'
+import CartDrawer from '@/components/cart/CartDrawer'
+import CartBar from '@/components/cart/CartBar'
+import { site } from '@/lib/site'
 
-const inter = Inter({
+const beVietnam = Be_Vietnam_Pro({
   subsets: ['latin', 'vietnamese'],
-  variable: '--font-inter',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-be-vietnam',
   display: 'swap',
 })
 
 const playfair = Playfair_Display({
-  subsets: ['latin'],
+  subsets: ['latin', 'vietnamese'],
   variable: '--font-playfair',
   display: 'swap',
 })
 
+const description =
+  '2hFood – bún thịt nướng nước lèo sốt đậu phộng kiểu Lao Bảo (Quảng Trị) và bánh bột lọc Huế, nấu mới mỗi ngày tại Sài Gòn. Đặt món nhanh qua Zalo.'
+
 export const metadata: Metadata = {
-  title: '2HBread – Bánh Tươi Mỗi Ngày',
-  description:
-    'Tiệm bánh 2HBread – chuyên cung cấp bánh mì, bánh ngọt cao cấp làm mới mỗi ngày từ nguyên liệu chất lượng. Đặt hàng ngay qua Zalo hoặc Messenger.',
-  keywords: ['bánh mì', 'tiệm bánh', '2HBread', 'bánh tươi', 'croissant', 'donut', 'bánh ngọt'],
-  authors: [{ name: '2HBread' }],
+  metadataBase: new URL(site.url),
+  title: {
+    default: '2hFood – Bún Thịt Nướng & Bánh Lọc Huế',
+    template: '%s | 2hFood',
+  },
+  description,
+  keywords: ['bún thịt nướng', 'bánh lọc Huế', 'món Huế', 'đặc sản miền Trung', '2hFood', 'đặt món Zalo'],
   openGraph: {
-    title: '2HBread – Bánh Tươi Mỗi Ngày',
-    description: 'Tiệm bánh cao cấp với bánh làm mới mỗi ngày từ nguyên liệu chất lượng.',
-    url: 'https://www.2hbread.com',
-    siteName: '2HBread',
-    images: [
-      {
-        url: 'https://images.unsplash.com/photo-1568254183919-78a4f43a2877?w=1200&q=80',
-        width: 1200,
-        height: 630,
-        alt: '2HBread – Tiệm Bánh',
-      },
-    ],
+    title: '2hFood – Bún Thịt Nướng & Bánh Lọc Huế',
+    description,
+    url: site.url,
+    siteName: site.name,
     locale: 'vi_VN',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: '2HBread – Bánh Tươi Mỗi Ngày',
-    description: 'Tiệm bánh cao cấp với bánh làm mới mỗi ngày từ nguyên liệu chất lượng.',
+    title: '2hFood – Bún Thịt Nướng & Bánh Lọc Huế',
+    description,
   },
   robots: { index: true, follow: true },
-  icons: {
-    icon: '/logo.png',
-    apple: '/logo.png',
-  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="vi" className={`${beVietnam.variable} ${playfair.variable}`}>
       <body>
-        <Navbar />
-        <main>{children}</main>
-        <FloatingChat />
+        <CartProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+          <CartBar />
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   )

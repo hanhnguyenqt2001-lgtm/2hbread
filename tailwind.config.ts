@@ -2,36 +2,48 @@ import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
-        cream: {
-          50: '#FFFDF9',
-          100: '#FFF8F0',
-          200: '#FEF3E8',
-          300: '#FDEBD8',
+        // rice paper / nón lá background tones
+        rice: {
+          50: '#FFFCF5',
+          100: '#FBF5E9',
+          200: '#F4EAD5',
+          300: '#E9DBBE',
         },
-        bread: {
-          100: '#E8C9A8',
-          200: '#D4A882',
-          300: '#C4916A',
-          400: '#A8714D',
-          500: '#8B5E3C',
-          600: '#6B4226',
-          700: '#5C3D1E',
-          800: '#3A2010',
-          900: '#2D1B0E',
+        // banana leaf greens
+        leaf: {
+          50: '#EEF5EC',
+          100: '#DCEBD8',
+          200: '#B5D3AE',
+          400: '#4F8A4B',
+          500: '#2F6B3A',
+          600: '#24552E',
+          700: '#1B4123',
+          800: '#14301A',
+          900: '#0E2213',
         },
-        spice: '#F4A261',
-        ember: '#C1440E',
+        // grill fire / chili
+        chili: {
+          400: '#E0583A',
+          500: '#C8371D',
+          600: '#A82B15',
+        },
+        // Huế royal purple, used sparingly
+        hue: {
+          100: '#EFE4F3',
+          500: '#5B2A6E',
+        },
+        turmeric: '#E0A526',
+        ink: '#2A1E14',
       },
       fontFamily: {
         display: ['var(--font-playfair)', 'Georgia', 'serif'],
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-be-vietnam)', 'system-ui', 'sans-serif'],
       },
       keyframes: {
         fadeInUp: {
@@ -45,7 +57,7 @@ const config: Config = {
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
-        'fade-in': 'fadeIn 0.4s ease-out forwards',
+        'fade-in': 'fadeIn 0.3s ease-out forwards',
       },
     },
   },
