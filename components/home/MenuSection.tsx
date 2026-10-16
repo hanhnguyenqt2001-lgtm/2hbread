@@ -10,7 +10,7 @@ export default function MenuSection() {
   const items = active === categories[0] ? menu : menu.filter((m) => m.category === active)
 
   return (
-    <section id="thuc-don" className="py-20 bg-rice-50">
+    <section id="thuc-don" className="py-14 sm:py-20 bg-rice-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center max-w-2xl mx-auto">
           <span className="eyebrow">Thực đơn</span>
@@ -40,7 +40,7 @@ export default function MenuSection() {
           ))}
         </div>
 
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 sm:mt-8 grid gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
             <MenuCard key={item.id} item={item} />
           ))}

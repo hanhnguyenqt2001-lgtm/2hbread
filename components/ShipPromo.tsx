@@ -18,7 +18,7 @@ export default function ShipPromo() {
           </div>
         </div>
 
-        <ul className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:ml-auto">
+        <ul className="grid grid-cols-2 sm:flex gap-2 sm:gap-3 md:ml-auto">
           {shipTiers.map((t) => (
             <li key={t.minTotal} className="rounded-2xl bg-white text-ink px-4 py-2.5 text-sm">
               Đơn từ <b>{formatPrice(t.minTotal)}</b>
