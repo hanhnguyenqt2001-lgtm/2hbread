@@ -9,6 +9,7 @@ import { useCart } from './cart/CartProvider'
 const links = [
   { href: '/', label: 'Trang chủ' },
   { href: '/#thuc-don', label: 'Thực đơn' },
+  { href: '/#ghe-quan', label: 'Địa chỉ' },
   { href: '/gioi-thieu', label: 'Giới thiệu' },
 ]
 

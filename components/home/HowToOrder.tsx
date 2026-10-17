@@ -8,8 +8,8 @@ const steps = [
   },
   {
     icon: MessageCircle,
-    title: 'Gửi đơn qua Zalo',
-    text: 'Điền tên, số điện thoại rồi bấm đặt món – đơn được sao chép sẵn, chỉ cần dán và gửi.',
+    title: 'Gửi đơn',
+    text: 'Điền tên, số điện thoại rồi bấm Đặt món – đơn được gửi thẳng đến quán, kèm mã đơn hàng.',
   },
   {
     icon: PhoneCall,

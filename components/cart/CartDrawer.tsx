@@ -5,6 +5,7 @@ import { AlertTriangle, CheckCircle2, Copy, Loader2, MessageCircle, ShoppingBag,
 import { nextShipTier, shipDiscountFor } from '@/lib/shipping'
 import { useCart } from './CartProvider'
 import QtyStepper from './QtyStepper'
+import { useOpenStatus } from '@/components/OpenStatus'
 import { formatPrice } from '@/lib/format'
 import { site } from '@/lib/site'
 import { buildOrderMessage, copyText, isValidPhone, type Customer } from '@/lib/order'
@@ -17,6 +18,7 @@ export default function CartDrawer() {
   const { lines, total, isOpen, close, setQty, clear } = useCart()
   const [customer, setCustomer] = useState<Customer>(emptyCustomer)
   const [errors, setErrors] = useState<Errors>({})
+  const openStatus = useOpenStatus()
   const [sending, setSending] = useState(false)
   const [orderId, setOrderId] = useState<string | null>(null)
   // Set only when sending to the shop failed: the customer falls back to sending it via Zalo.
@@ -302,6 +304,15 @@ export default function CartDrawer() {
             </div>
 
             <footer className="border-t border-rice-300 px-5 py-4 bg-white/60 space-y-3">
+              {openStatus && !openStatus.open && (
+                <p className="rounded-2xl bg-turmeric/15 px-3.5 py-2.5 text-xs text-ink/80">
+                  Quán đang đóng cửa. Bạn vẫn có thể đặt trước – quán sẽ xác nhận khi mở cửa lúc{' '}
+                  <b>
+                    {openStatus.opensAt} {openStatus.opensWhen}
+                  </b>
+                  .
+                </p>
+              )}
               <ShipProgress total={total} />
               <div className="flex items-center justify-between">
                 <span className="text-ink/60 text-sm">Tạm tính</span>

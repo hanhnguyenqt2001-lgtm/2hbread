@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { Facebook, MapPin, MessageCircle, Phone } from 'lucide-react'
 import Logo from './Logo'
+import OpenStatus from './OpenStatus'
+import { hoursSummary } from '@/lib/hours'
 import { site } from '@/lib/site'
 
 export default function Footer() {
@@ -13,12 +15,22 @@ export default function Footer() {
             <p className="mt-4 text-rice-200/70 text-sm leading-relaxed max-w-xs">
               Bún thịt nướng & bánh lọc Huế – hương vị miền Trung nấu mới mỗi ngày.
             </p>
+            <OpenStatus dark className="mt-5" />
+            <dl className="mt-3 space-y-1.5 text-sm">
+              {hoursSummary.map((h) => (
+                <div key={h.days} className="flex gap-2">
+                  <dt className="text-rice-200/90 font-medium w-28 flex-shrink-0">{h.days}</dt>
+                  <dd className="text-rice-200/70">{h.times.join(' · ')}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
 
           <div>
             <h3 className="text-white font-semibold mb-4">Khám phá</h3>
             <ul className="space-y-2.5 text-sm">
               <li><Link href="/#thuc-don" className="text-rice-200/70 hover:text-turmeric transition-colors">Thực đơn</Link></li>
+              <li><Link href="/#ghe-quan" className="text-rice-200/70 hover:text-turmeric transition-colors">Địa chỉ & đánh giá</Link></li>
               <li><Link href="/gioi-thieu" className="text-rice-200/70 hover:text-turmeric transition-colors">Câu chuyện của chúng tôi</Link></li>
             </ul>
           </div>

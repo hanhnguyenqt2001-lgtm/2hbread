@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react'
 
 export default function StoryTeaser() {
   return (
-    <section className="pb-20">
+    <section className="py-14 sm:py-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="relative overflow-hidden rounded-[2rem] bg-leaf-700 text-rice-100 px-6 py-12 sm:px-12 md:py-16">
           <div className="absolute inset-0 leaf-pattern opacity-[0.07]" />

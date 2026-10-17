@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Leaf, Truck } from 'lucide-react'
 import { menu } from '@/data/menu'
 import DishImage from '@/components/DishImage'
+import OpenStatus from '@/components/OpenStatus'
 import { formatPrice } from '@/lib/format'
 
 export default function Hero() {
@@ -32,6 +33,7 @@ export default function Hero() {
             </Link>
           </div>
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink/60">
+            <OpenStatus />
             <span className="flex items-center gap-1.5">
               <Leaf className="w-4 h-4 text-leaf-500" /> Nấu mới mỗi ngày
             </span>
