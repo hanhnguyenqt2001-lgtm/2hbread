@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { CheckCircle2, Copy, MessageCircle, ShoppingBag, Trash2, Truck, X } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, Copy, Loader2, MessageCircle, ShoppingBag, Trash2, Truck, X } from 'lucide-react'
 import { nextShipTier, shipDiscountFor } from '@/lib/shipping'
 import { useCart } from './CartProvider'
 import QtyStepper from './QtyStepper'
@@ -17,6 +17,9 @@ export default function CartDrawer() {
   const { lines, total, isOpen, close, setQty, clear } = useCart()
   const [customer, setCustomer] = useState<Customer>(emptyCustomer)
   const [errors, setErrors] = useState<Errors>({})
+  const [sending, setSending] = useState(false)
+  const [orderId, setOrderId] = useState<string | null>(null)
+  // Set only when sending to the shop failed: the customer falls back to sending it via Zalo.
   const [message, setMessage] = useState<string | null>(null)
   const [copied, setCopied] = useState<boolean | null>(null)
 
@@ -27,22 +30,49 @@ export default function CartDrawer() {
     return () => window.removeEventListener('keydown', onKey)
   }, [isOpen, close])
 
+  // Closing the drawer after a successful order resets it for the next order.
+  useEffect(() => {
+    if (!isOpen && orderId) {
+      setOrderId(null)
+      setCustomer(emptyCustomer)
+    }
+  }, [isOpen, orderId])
+
   function update(field: keyof Customer, value: string) {
     setCustomer((c) => ({ ...c, [field]: value }))
     if (field in errors) setErrors((e) => ({ ...e, [field]: undefined }))
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (sending) return
     const next: Errors = {}
     if (!customer.name.trim()) next.name = 'Vui lòng nhập tên của bạn'
     if (!isValidPhone(customer.phone)) next.phone = 'Số điện thoại chưa đúng (VD: 0901 234 567)'
     setErrors(next)
     if (Object.keys(next).length) return
 
-    // Show the instructions first; on mobile, opening Zalo immediately hides them.
-    setMessage(buildOrderMessage(customer, lines, total))
-    setCopied(null)
+    setSending(true)
+    try {
+      const res = await fetch('/api/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer,
+          items: lines.map(({ item, qty }) => ({ id: item.id, qty })),
+        }),
+      })
+      const data = await res.json().catch(() => null)
+      if (!res.ok || !data?.ok) throw new Error(data?.error || `HTTP ${res.status}`)
+      setOrderId(data.orderId)
+      clear()
+    } catch {
+      // Never lose the order: let the customer send it to the shop via Zalo instead.
+      setMessage(buildOrderMessage(customer, lines, total))
+      setCopied(null)
+    } finally {
+      setSending(false)
+    }
   }
 
   // Runs in the Zalo link's onClick, so the copy happens in the same tap that opens Zalo.
@@ -54,6 +84,7 @@ export default function CartDrawer() {
     clear()
     setMessage(null)
     setCopied(null)
+    setOrderId(null)
     setCustomer(emptyCustomer)
     close()
   }
@@ -73,7 +104,7 @@ export default function CartDrawer() {
           style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}
         >
           <h2 className="font-display text-xl font-bold text-leaf-800">
-            {message ? 'Gửi đơn qua Zalo' : 'Giỏ hàng của bạn'}
+            {orderId ? 'Đặt món thành công' : message ? 'Gửi đơn qua Zalo' : 'Giỏ hàng của bạn'}
           </h2>
           <button
             onClick={close}
@@ -84,8 +115,44 @@ export default function CartDrawer() {
           </button>
         </header>
 
-        {message ? (
+        {orderId ? (
+          <div className="flex-1 overflow-y-auto px-6 py-10 flex flex-col items-center text-center">
+            <div className="w-16 h-16 rounded-full bg-leaf-50 text-leaf-500 flex items-center justify-center">
+              <CheckCircle2 className="w-9 h-9" />
+            </div>
+            <h3 className="mt-5 font-display text-2xl font-bold text-leaf-800">Cảm ơn {customer.name.trim()}!</h3>
+            <p className="mt-2 text-ink/70 leading-relaxed">
+              Quán đã nhận đơn của bạn và sẽ gọi đến số <b>{customer.phone.trim()}</b> để xác nhận và báo phí
+              ship trong ít phút.
+            </p>
+            <p className="mt-5 rounded-2xl bg-white ring-1 ring-rice-300 px-5 py-3 text-sm text-ink/60">
+              Mã đơn hàng
+              <span className="block font-mono text-lg font-bold text-chili-500 tracking-wide">{orderId}</span>
+            </p>
+            <div className="mt-8 w-full space-y-3">
+              <button onClick={startOver} className="btn-primary w-full !py-3.5">
+                Xong
+              </button>
+              <a
+                href={site.zaloUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-outline w-full"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Cần đổi món? Nhắn Zalo cho quán
+              </a>
+            </div>
+          </div>
+        ) : message ? (
           <div className="flex-1 overflow-y-auto px-5 py-6 space-y-5">
+            <p className="flex gap-2.5 rounded-2xl bg-turmeric/15 px-4 py-3 text-sm text-ink/80 leading-relaxed">
+              <AlertTriangle className="w-5 h-5 text-turmeric flex-shrink-0 mt-0.5" />
+              <span>
+                Chưa gửi được đơn tự động. Bạn vui lòng <b>gửi đơn qua Zalo</b> theo 3 bước dưới đây – quán vẫn
+                nhận đơn bình thường.
+              </span>
+            </p>
             <ol className="space-y-3 rounded-2xl bg-leaf-50 border border-leaf-100 p-4 text-sm text-ink/80 leading-relaxed">
               {[
                 <>Bấm nút <b>“Sao chép đơn & mở Zalo”</b> bên dưới.</>,
@@ -240,9 +307,18 @@ export default function CartDrawer() {
                 <span className="text-ink/60 text-sm">Tạm tính</span>
                 <span className="text-lg font-bold text-chili-500">{formatPrice(total)}</span>
               </div>
-              <button type="submit" className="btn-primary w-full !py-3.5 text-base">
-                <MessageCircle className="w-5 h-5" />
-                Tiếp tục đặt món qua Zalo
+              <button type="submit" disabled={sending} className="btn-primary w-full !py-3.5 text-base">
+                {sending ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Đang gửi đơn…
+                  </>
+                ) : (
+                  <>
+                    <ShoppingBag className="w-5 h-5" />
+                    Đặt món
+                  </>
+                )}
               </button>
             </footer>
           </form>
