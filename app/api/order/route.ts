@@ -3,10 +3,9 @@ import { menu } from '@/data/menu'
 import { buildOrderMessage, isValidPhone, normalizePhone, type Customer } from '@/lib/order'
 import { shipDiscountFor } from '@/lib/shipping'
 
-// n8n "webhook-test" URLs only accept a call while the workflow editor is listening.
-// Set ORDER_WEBHOOK_URL on Vercel (e.g. .../webhook/2h-dat-don) to switch to production.
-const WEBHOOK_URL =
-  process.env.ORDER_WEBHOOK_URL || 'https://n8n.2hbread.com/webhook-test/2h-dat-don'
+// Production n8n webhook (the workflow must be active). ORDER_WEBHOOK_URL overrides it,
+// e.g. to point at .../webhook-test/2h-dat-don while debugging the workflow in n8n.
+const WEBHOOK_URL = process.env.ORDER_WEBHOOK_URL || 'https://n8n.2hbread.com/webhook/2h-dat-don'
 
 const str = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '')
 
